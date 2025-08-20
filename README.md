@@ -39,6 +39,8 @@ Each project will be placed in its own folder with clear structure and documenta
 
 ## 📜 License
 
-This repository is open-source and available for educational and personal use.
+This project is licensed under the **MIT License**,  
+which allows free use, modification, and distribution of all files.
+
 # cpp-portfolio
 A  curated portfolio of C++ projects and code examples demonstrating various programming concepts, algorithms, and practical applications. Organized for easy navigation and continuous growth.
