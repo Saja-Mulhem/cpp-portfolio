@@ -1,0 +1,107 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// === تعريف ألوان ANSI ===
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define CYAN    "\033[36m"
+
+// === تعريف بنية المهمة ===
+struct Task {
+    string title;
+    string description;
+};
+
+// === متغير عام لحفظ المهام ===
+vector<Task> tasks;
+
+// === تحميل المهام من الملف ===
+void loadTasks() {
+    ifstream file("tasks.txt");
+    if (!file) return; // إذا لم يوجد الملف
+    Task task;
+    while (getline(file, task.title) && getline(file, task.description)) {
+        tasks.push_back(task);
+    }
+    file.close();
+}
+
+// === حفظ المهام في الملف ===
+void saveTasks() {
+    ofstream file("tasks.txt");
+    for (auto &task : tasks) {
+        file << task.title << endl << task.description << endl;
+    }
+    file.close();
+}
+
+// === إضافة مهمة جديدة ===
+void addTask() {
+    Task task;
+    cout << CYAN << "📝 أدخل اسم المهمة: " << RESET;
+    cin.ignore();
+    getline(cin, task.title);
+    cout << CYAN << "💬 أدخل وصف المهمة: " << RESET;
+    getline(cin, task.description);
+    tasks.push_back(task);
+    saveTasks();
+    cout << GREEN << "✅ تمت إضافة المهمة بنجاح!\n" << RESET;
+}
+
+// === عرض جميع المهام ===
+void listTasks() {
+    if (tasks.empty()) {
+        cout << RED << "⚠️ لا توجد مهام بعد.\n" << RESET;
+        return;
+    }
+    cout << BLUE << "\n📋 قائمة المهام:\n" << RESET;
+    for (size_t i = 0; i < tasks.size(); ++i)
+        cout << YELLOW << i + 1 << ". " << RESET
+             << tasks[i].title << " - " << tasks[i].description << endl;
+}
+
+// === حذف مهمة ===
+void deleteTask() {
+    int index;
+    cout << CYAN << "❌ أدخل رقم المهمة التي تريد حذفها: " << RESET;
+    cin >> index;
+    if (index < 1 || index > (int)tasks.size()) {
+        cout << RED << "❗ رقم غير صالح.\n" << RESET;
+        return;
+    }
+    tasks.erase(tasks.begin() + index - 1);
+    saveTasks();
+    cout << GREEN << "🗑️ تم حذف المهمة بنجاح.\n" << RESET;
+}
+
+// === القائمة الرئيسية ===
+int main() {
+    loadTasks();
+    int choice;
+    do {
+        cout << BLUE << "\n--- مدير المهام ---\n" << RESET;
+        cout << YELLOW << "1. عرض المهام\n" << RESET;
+        cout << YELLOW << "2. إضافة مهمة\n" << RESET;
+        cout << YELLOW << "3. حذف مهمة\n" << RESET;
+        cout << YELLOW << "0. خروج\n" << RESET;
+        cout << CYAN << "اختيارك: " << RESET;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: listTasks(); break;
+            case 2: addTask(); break;
+            case 3: deleteTask(); break;
+            case 0: cout << GREEN << "👋 وداعًا!\n" << RESET; break;
+            default: cout << RED << "❗ خيار غير صالح.\n" << RESET;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
